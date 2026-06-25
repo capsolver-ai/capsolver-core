@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head><title>reCAPTCHA v3 Test Fixture</title></head>
+<body>
+  <h1>reCAPTCHA v3 Fixture</h1>
+  <form>
+    <!-- v3 badge element (invisible, positioned bottom-right) -->
+    <div class="grecaptcha-badge" style="position:fixed;bottom:0;right:0"></div>
+    <textarea name="g-recaptcha-response" style="display:none"></textarea>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    var badgeEl = document.querySelector('.grecaptcha-badge');
+
+    window.___grecaptcha_cfg = {
+      clients: {
+        '0': {
+          'a': {
+            'b': badgeEl  // classList contains 'grecaptcha-badge' → triggers v3 detection
+          },
+          'c': {
+            'd': {
+              sitekey: '6LdO-arAAAAABBFM4kJ0mbFVRZEcQGPm7fXkNvHFz',
+              action: 'login',
+              s: null,
+              callback: null,
+              size: null,
+              bind: null
+            }
+          }
+        }
+      }
+    };
+  </script>
+</body>
+</html>

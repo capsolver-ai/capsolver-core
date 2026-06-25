@@ -1,0 +1,17 @@
+# Development dependencies for capsolver-core
+# Mirrors [project.optional-dependencies] in pyproject.toml.
+# Source of truth: pyproject.toml — regenerate if constraints change.
+
+# Core
+httpx>=0.27
+
+# Browser (optional, needed for browser integration tests)
+playwright>=1.40
+
+# Testing
+pytest>=8.0
+pytest-asyncio>=1.0
+
+# Linting & type checking
+ruff>=0.4
+mypy>=1.10

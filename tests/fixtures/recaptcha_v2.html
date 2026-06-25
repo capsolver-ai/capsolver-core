@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head><title>reCAPTCHA v2 Test Fixture</title></head>
+<body>
+  <h1>reCAPTCHA v2 Checkbox Fixture</h1>
+  <form>
+    <!-- Container with the widget -->
+    <div id="recaptcha-widget" class="g-recaptcha" data-sitekey="6Le-wvkSAAAAAPBMRT76XmXbTio1CVMHH8YxCf4B"></div>
+    <!-- The hidden textarea where reCAPTCHA puts the response token -->
+    <textarea name="g-recaptcha-response" style="display:none"></textarea>
+    <button type="submit">Submit</button>
+  </form>
+
+  <script>
+    // Simulate the internal grecaptcha config object that the JS extraction script reads.
+    // The real structure is created by Google's recaptcha/api.js, but we mock it here.
+    var containerEl = document.getElementById('recaptcha-widget');
+
+    window.___grecaptcha_cfg = {
+      clients: {
+        '0': {
+          // Level 1: contains DOM node reference
+          'a': containerEl,
+          // Level 2: nested object with widget config
+          'b': {
+            'c': {
+              sitekey: '6Le-wvkSAAAAAPBMRT76XmXbTio1CVMHH8YxCf4B',
+              action: null,
+              s: null,
+              callback: function(token) { console.log('callback:', token); },
+              size: 'normal',
+              bind: null
+            }
+          }
+        }
+      }
+    };
+  </script>
+</body>
+</html>

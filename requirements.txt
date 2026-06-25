@@ -1,0 +1,4 @@
+# Core dependencies for capsolver-core
+# Mirrors [project.dependencies] in pyproject.toml.
+# Source of truth: pyproject.toml — regenerate if constraints change.
+httpx>=0.27

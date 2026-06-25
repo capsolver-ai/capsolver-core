@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+<head><title>Cloudflare Turnstile Test Fixture</title></head>
+<body>
+  <h1>Cloudflare Turnstile Fixture</h1>
+  <form>
+    <!-- Turnstile widget container -->
+    <div class="cf-turnstile" data-sitekey="0x4AAAAAAABcMYliPZn9rRmx" data-action="login" data-cdata="session-123">
+      <!-- Turnstile iframe -->
+      <iframe src="https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/b/turnstile/if/ov2/av0/rv0/abc123?sitekey=0x4AAAAAAABcMYliPZn9rRmx&action=login"></iframe>
+    </div>
+    <!-- Hidden input for the response token -->
+    <input type="hidden" name="cf-turnstile-response" value="">
+    <button type="submit">Submit</button>
+  </form>
+</body>
+</html>

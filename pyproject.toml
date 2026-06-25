@@ -1,0 +1,48 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "capsolver-core"
+version = "0.1.0"
+description = "CapSolver core library — detect captchas, solve via API, and autofill tokens. Powers capsolver-agent and capsolver-mcp."
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+keywords = ["capsolver", "captcha", "recaptcha", "turnstile"]
+authors = [{ name = "capsolver-ai", email = "dev@capsolver.ai" }]
+dependencies = [
+    "httpx>=0.27",
+]
+
+[project.optional-dependencies]
+playwright = ["playwright>=1.40"]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=1.0",
+    "ruff>=0.4",
+    "mypy>=1.10",
+]
+
+[project.urls]
+Homepage = "https://capsolver.com"
+Repository = "https://github.com/capsolver-ai/capsolver-core"
+Issues = "https://github.com/capsolver-ai/capsolver-core/issues"
+
+[project.scripts]
+capsolver = "capsolver_core.__main__:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/capsolver_core"]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+testpaths = ["tests"]
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.mypy]
+python_version = "3.10"
+strict = true
