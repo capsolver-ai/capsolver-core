@@ -9,7 +9,7 @@ from __future__ import annotations
 import asyncio
 import time
 from dataclasses import dataclass, field
-from typing import Any, Callable
+from typing import Any, Callable, NoReturn
 
 from capsolver_core.core.errors import CapsolverError, CapsolverTimeoutError, RateLimitError
 from capsolver_core.core.http import FetchHttp
@@ -144,6 +144,7 @@ class CapsolverClient:
     def _unwrap(self, http_status: int, data: dict[str, Any], fallback_message: str) -> dict[str, Any]:
         if http_status != 200 or (data and (data.get("errorId") or data.get("errorCode"))):
             error_msg = data.get("errorDescription") if data else fallback_message
+            message = str(error_msg or fallback_message)
             error_kwargs: dict[str, Any] = {
                 "error_id": data.get("errorId") if data else None,
                 "error_code": data.get("errorCode") if data else None,
@@ -151,12 +152,12 @@ class CapsolverClient:
                 "http_status": http_status,
             }
             if http_status == 429:
-                self._fail(RateLimitError(error_msg or "Rate limit exceeded", **error_kwargs))
+                self._fail(RateLimitError(message or "Rate limit exceeded", **error_kwargs))
             else:
-                self._fail(CapsolverError(error_msg, **error_kwargs))
+                self._fail(CapsolverError(message, **error_kwargs))
         return data
 
-    def _fail(self, error: CapsolverError) -> None:  # type: ignore[return-value]
+    def _fail(self, error: CapsolverError) -> NoReturn:
         if self._options.on_error:
             self._options.on_error(error)
         raise error

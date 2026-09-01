@@ -83,7 +83,7 @@ class CreateTaskResp(BaseResp):
         self.task_id = task_id
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> CreateTaskResp:  # type: ignore[override]
+    def from_dict(cls, data: dict[str, Any]) -> CreateTaskResp:
         return cls(
             task_id=data.get("taskId", ""),
             error_id=data.get("errorId", 0),
@@ -103,7 +103,7 @@ class BalanceResp(BaseResp):
         self.packages = packages or []
 
     @classmethod
-    def from_dict(cls, data: dict[str, Any]) -> BalanceResp:  # type: ignore[override]
+    def from_dict(cls, data: dict[str, Any]) -> BalanceResp:
         return cls(
             balance=data.get("balance", 0.0),
             packages=data.get("packages", []),

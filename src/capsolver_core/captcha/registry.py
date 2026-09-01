@@ -5,6 +5,8 @@ Mirrors the Node SDK's captcha/registry.ts.
 
 from __future__ import annotations
 
+import builtins
+
 from capsolver_core.core.types import CaptchaType
 from capsolver_core.captcha.handler import CaptchaHandler
 
@@ -43,12 +45,12 @@ class HandlerRegistry:
         except (ValueError, KeyError):
             return None
 
-    def list(self) -> list[str]:
+    def list(self) -> builtins.list[str]:
         """Registered handler names, in insertion order."""
-        return list(self._by_name.keys())
+        return builtins.list(self._by_name.keys())
 
-    def handlers(self) -> list[CaptchaHandler]:
-        return list(self._by_name.values())
+    def handlers(self) -> builtins.list[CaptchaHandler]:
+        return builtins.list(self._by_name.values())
 
     def has(self, name: str) -> bool:
         return name in self._by_name

@@ -5,6 +5,8 @@ Mirrors the Node SDK's captcha/handlers/cloudflare.ts.
 
 from __future__ import annotations
 
+from typing import Any
+
 from capsolver_core.core.types import CaptchaType, TokenSolution
 from capsolver_core.core.client import CapsolverClient, WaitOptions
 from capsolver_core.core.tasks import build_cloudflare_task
@@ -51,11 +53,11 @@ class CloudflareHandler:
         return to_solution(CaptchaType.CLOUDFLARE, TokenSolution.from_dict(res.get("solution")))
 
     async def detect(self, page: PageDriver) -> bool:
-        return await page.evaluate(DETECT_CLOUDFLARE_JS)
+        return bool(await page.evaluate(DETECT_CLOUDFLARE_JS))
 
     async def get_captcha_info(self, page: PageDriver) -> list[CaptchaInfo]:
         url = await page.url()
-        raws: list[dict] = await page.evaluate(GET_CLOUDFLARE_INFOS_JS)
+        raws: list[dict[str, Any]] = await page.evaluate(GET_CLOUDFLARE_INFOS_JS)
         infos: list[CaptchaInfo] = []
         for r in raws:
             if not r.get("websiteKey"):
@@ -73,7 +75,9 @@ class CloudflareHandler:
         return infos
 
     async def fill(self, page: PageDriver, solution: Solution, info: CaptchaInfo) -> bool:
-        return await page.evaluate(
-            FILL_CLOUDFLARE_JS,
-            {"token": solution.token, "containerId": info.container_id},
+        return bool(
+            await page.evaluate(
+                FILL_CLOUDFLARE_JS,
+                {"token": solution.token, "containerId": info.container_id},
+            )
         )

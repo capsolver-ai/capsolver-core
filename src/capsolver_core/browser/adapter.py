@@ -9,7 +9,7 @@ it stays dependency-free at import time — callers pass their own page.
 
 from __future__ import annotations
 
-from typing import Any, Protocol, runtime_checkable
+from typing import Any, Protocol, cast, runtime_checkable
 
 from capsolver_core.browser.driver import PageDriver
 
@@ -34,7 +34,7 @@ class _PlaywrightDriver:
         return await self._page.evaluate(script)
 
     async def url(self) -> str:
-        return self._page.url
+        return cast(str, self._page.url)
 
     async def wait_for_selector(self, selector: str, *, timeout: float | None = None) -> None:
         opts: dict[str, Any] = {}
@@ -66,13 +66,13 @@ class _GenericDriver:
         import asyncio
 
         if asyncio.iscoroutine(result):
-            return await result
+            return cast(str, await result)
         if callable(result):
             r = result()
             if asyncio.iscoroutine(r):
-                return await r
-            return r
-        return result  # type: ignore[return-value]
+                return cast(str, await r)
+            return cast(str, r)
+        return cast(str, result)
 
     async def wait_for_selector(self, selector: str, *, timeout: float | None = None) -> None:
         fn = getattr(self._page, "wait_for_selector", None)
