@@ -7,11 +7,11 @@ name = "capsolver-core"
 version = "0.1.0"
 description = "CapSolver core library — detect captchas, solve via API, and autofill tokens. Powers capsolver-agent and capsolver-mcp."
 readme = "README.md"
-license = "ISC"
+license = "MIT"
 license-files = ["LICENSE"]
 requires-python = ">=3.10"
 keywords = ["capsolver", "captcha", "recaptcha", "turnstile"]
-authors = [{ name = "capsolver-ai", email = "dev@capsolver.ai" }]
+authors = [{ name = "capsolver-ai", email = "support@capsolver.com" }]
 classifiers = [
     "Development Status :: 3 - Alpha",
     "Intended Audience :: Developers",
