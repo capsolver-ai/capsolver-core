@@ -16,3 +16,9 @@ tagged in Git as `vX.Y.Z` and published to PyPI with the same version.
 - Built-in support for reCAPTCHA v2, reCAPTCHA v3, and Cloudflare Turnstile.
 - `capsolver` CLI for local diagnostics.
 
+## [0.1.1] - 2026-09-09
+
+### Documentation
+- Updated public documentation for the core CapSolver client package.
+- Clarified PyPI publishing and release verification steps.
+- Refined support, security, and contribution guidance for external users.

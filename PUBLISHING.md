@@ -1,42 +1,36 @@
 # Publishing
 
-Release target: `capsolver-core` version `0.1.0`, prepared for public release on
-2026-09-01.
+This checklist is for maintainers releasing `capsolver-core` from the official
+open-source repository to TestPyPI and PyPI.
 
-This checklist is for maintainers syncing the prepared public files to the
-official open-source repository, testing the package on TestPyPI, and then
-publishing the final package to PyPI.
+Set the release version once before running the commands:
+
+```powershell
+$version = "0.1.1"
+$package = "capsolver-core"
+$module = "capsolver_core"
+$command = "capsolver"
+```
 
 ## Preconditions
 
-- The source is the prepared public copy, not a private development checkout.
-- `pyproject.toml` has `version = "0.1.0"`.
-- `CHANGELOG.md` has `## [0.1.0] - 2026-09-01`.
+- The public repository contains the exact code and documentation intended for
+  release.
+- `pyproject.toml` has `version = "$version"`.
+- `src/capsolver_core/__init__.py` exposes the same `__version__`.
+- `CHANGELOG.md` has a release entry for `$version` with the correct date.
 - `README.md`, `LICENSE`, `SECURITY.md`, `CONTRIBUTING.md`, and `SUPPORT.md`
   are present.
 - Documentation examples use placeholder credentials only.
-- The tree does not contain `.git`, `.venv`, `uv.lock`, caches, local path
-  overrides, real API keys, browser profiles, or private service data.
-
-## Sync to the Official Open-Source Repository
-
-Copy this directory into the official `capsolver-core` public repository working
-tree, then review the diff before committing.
-
-```bash
-git status
-git diff
-git add .
-git commit -m "Release v0.1.0"
-git status
-```
-
-Do not tag until the build, TestPyPI upload, and install test have passed.
+- The tree does not contain `.venv`, `uv.lock`, caches, local path overrides,
+  real API keys, browser profiles, or private service data.
+- `git status` is clean before building release artifacts.
 
 ## Verify Locally
 
-```bash
-uv sync --all-extras
+Run the source checks before building:
+
+```powershell
 uv run pytest
 uv run ruff check src tests
 uv run mypy src
@@ -44,10 +38,15 @@ uv run mypy src
 
 ## Build and Check
 
-```bash
-python -m pip install --upgrade build twine
-python -m build
-python -m twine check dist/*
+Build fresh distributions and check the package metadata:
+
+```powershell
+Remove-Item .\dist -Recurse -Force -ErrorAction SilentlyContinue
+uv build
+
+$dist = Get-ChildItem -Path .\dist\*.whl, .\dist\*.tar.gz |
+  Select-Object -ExpandProperty FullName
+uvx twine check $dist
 ```
 
 Inspect the source distribution and wheel before upload. Confirm that no
@@ -56,18 +55,25 @@ are included.
 
 ## TestPyPI Test Release
 
-Upload the exact distribution files to TestPyPI first.
+Upload the exact checked distribution files to TestPyPI first:
 
-```bash
-python -m twine upload --repository testpypi dist/*
+```powershell
+$env:TWINE_USERNAME = "__token__"
+$env:TWINE_PASSWORD = "pypi-TestPyPI-token"
+uvx twine upload --repository-url https://test.pypi.org/legacy/ $dist
 ```
 
-Install from TestPyPI in a clean environment and smoke-test the CLI import path.
+Install from TestPyPI in a clean environment and smoke-test the import path and
+CLI:
 
-```bash
-python -m pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ capsolver-core==0.1.0
-python -c "import capsolver_core; print(capsolver_core.__version__)"
-capsolver --help
+```powershell
+python -m pip install --no-cache-dir `
+  --index-url https://test.pypi.org/simple/ `
+  --extra-index-url https://pypi.org/simple/ `
+  "$package==$version"
+
+python -c "import $module; print($module.__version__)"
+& $command --help
 ```
 
 PyPI and TestPyPI distributions cannot be overwritten. If the test upload is
@@ -75,34 +81,43 @@ wrong, fix the issue and publish a new version.
 
 ## Formal PyPI Release
 
-After TestPyPI passes, upload the same checked distribution files to PyPI.
+After TestPyPI passes, upload the same checked distribution files to PyPI:
 
-```bash
-python -m twine upload dist/*
+```powershell
+$env:TWINE_USERNAME = "__token__"
+$env:TWINE_PASSWORD = "pypi-PyPI-token"
+uvx twine upload --repository-url https://upload.pypi.org/legacy/ $dist
 ```
 
-Then verify installation from PyPI.
+Then verify installation from PyPI in a clean environment:
 
-```bash
-python -m pip install capsolver-core==0.1.0
-python -c "import capsolver_core; print(capsolver_core.__version__)"
-capsolver --help
+```powershell
+python -m pip install --no-cache-dir "$package==$version"
+python -c "import $module; print($module.__version__)"
+& $command --help
+```
+
+Clear token environment variables after publishing:
+
+```powershell
+Remove-Item Env:\TWINE_USERNAME -ErrorAction SilentlyContinue
+Remove-Item Env:\TWINE_PASSWORD -ErrorAction SilentlyContinue
 ```
 
 ## Tag and GitHub Release
 
-When the PyPI release is verified, create the release tag and push it from the
-official public repository.
+When the PyPI release is verified, create and push the release tag from the
+official public repository:
 
-```bash
-git tag v0.1.0
+```powershell
+git tag "v$version"
 git push origin main
-git push origin v0.1.0
+git push origin "v$version"
 ```
 
-Create a GitHub Release for `v0.1.0` using the `CHANGELOG.md` entry.
+Create a GitHub Release for `v$version` using the matching `CHANGELOG.md`
+entry.
 
 Prefer PyPI Trusted Publishing from the official public GitHub repository for
 future releases. If manual upload is used, use a project-scoped PyPI API token
 instead of an account password.
-
